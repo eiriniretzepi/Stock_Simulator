@@ -1,0 +1,94 @@
+{% load static %}
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Stock Portfolio</title>
+      <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+
+
+<!-- Start vertical navbar -->
+    <nav class="vertical-nav navbar-dark bg-dark" id="vertical-nav">
+  <div class="py-2 px-3 mb-4 bg-dark text-light">
+    <div class="media d-flex align-items-center">
+      <div class="media-body">
+        <h4 class="m-0">Stock Simulator</h4>
+      </div>
+    </div>
+  </div>
+
+  <p class="text-gray font-weight-bold text-uppercase px-3 small pb-4 mb-0">Portfolio</p>
+
+
+  <ul class="nav flex-column bg-grey mb-2">
+    {% if user.is_authenticated %}
+    <li class="nav-item">
+      <a href="{% url 'portfolio'%}" class="nav-link text-dark font-italic bg-light">Dashboard</a>
+    </li>
+
+    <li class="nav-item">
+      <a href="#" class="nav-link text-dark font-italic bg-light">WatchList</a>
+    </li>
+
+    <li class="nav-item">
+      <a href="#" class="nav-link text-dark font-italic bg-light">Alerts</a>
+    </li>
+    <li class="nav-item">
+      <a href="#" class="nav-link text-dark font-italic bg-light">Transactions</a>
+    </li>
+    <li class="nav-item">
+      <a href="#" class="nav-link text-dark font-italic bg-light">Newsfeed</a>
+    </li>
+    <li class="nav-item">
+      <a href="#" class="nav-link text-dark font-italic bg-light">Settings</a>
+    </li>
+    {% else %}
+    <p class="text-white font-weight-bold px-3 small pb-4 mb-0">You need to login to access these fields!</p>
+    {% endif %}
+  </ul>
+    </nav>
+  </head>
+<!-- End vertical navbar -->
+
+
+  <!-- Start horizontal navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid px-2 mb-0 small  pb-2">
+  <!--    <a class="navbar-brand" href="{% url 'home' %}">Stock Portfolio</a>-->
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0 inline-group">
+        {% if user.is_authenticated %}
+        <form action ="{% url 'stockInfo' %}" class="d-flex" role="search" method="POST">
+          {% csrf_token %}
+          <input class="form-control me-1" type="search" placeholder="Search" aria-label="Search" name="ticker">
+          <button class="btn btn-outline-secondary form-control me-1 bg-dark text-light" type="submit">Search Stock</button>
+        </form>
+          </ul>
+        <a href="{% url 'logout'%}" class="btn btn-outline-light me-0">Logout</a>
+        {% else %}
+        <a href="{% url 'login'%}" class="btn btn-outline-light me-0">Login</a>
+        <a href="{% url 'signup'%}" class="btn btn-outline-light me-0">Signup</a>
+        {% endif %}
+      </div>
+    </div>
+  </nav>
+  <body>
+
+<!-- End horizontal navbar -->
+
+    <div class = "container">
+        <br/>
+
+
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
+  </body>
+</html>
