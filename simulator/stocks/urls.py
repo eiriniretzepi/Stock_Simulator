@@ -4,5 +4,5 @@ from . import views
 urlpatterns = [
     path('portfolio', views.list, name="portfolio"),
     path('stockInfo', views.stock_info, name="stockInfo"),
-    path('buy/<str:tick>', views.buy, name="buy"),
+    path('buy', views.buy, name="buy"),
 ]

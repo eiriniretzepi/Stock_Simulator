@@ -37,8 +37,15 @@
 
             <br/>
             <br/>
-            <a href="{% url 'buy' tick=api.symbol %}" class="btn btn-outline-secondary form-control me-2">Buy Stock</a>
+            <form action ="{% url 'buy' %}" class="d-flex" method="POST">
+                {% csrf_token %}
+                <input class="form-control me-1" type="hidden" name="ticker" value="{{api.symbol}}" />
+{#          <input class="form-control me-1" type="hidden" type="search" placeholder="Search" aria-label="Search" name="ticker">#}
+                <button class="btn btn-outline-secondary form-control me-1 bg-dark text-light" type="submit">Buy Stock</button>
+a
+{#            <a href="{% url 'buy' tick=api.symbol %}" class="btn btn-outline-secondary form-control me-2" type="submit">Buy Stock</a>#}
 {#            <a href="{% url 'sell' %} "  class="btn btn-outline-secondary form-control me-2">Sell Stock</a>a#}
+            </form>
     {% endif %}
 {% endif %}
 
