@@ -37,8 +37,8 @@
 
             <br/>
             <br/>
-            <a href="{% url 'buySell' ?buy={{ True }} %} " class="btn btn-outline-secondary form-control me-2">Buy Stock</a>
-            <a href="{% url 'buySell' ?buy={{ False }} %} "  class="btn btn-outline-secondary form-control me-2">Sell Stock</a>
+            <a href="{% url 'buy' api.symbol %}" class="btn btn-outline-secondary form-control me-2">Buy Stock</a>
+{#            <a href="{% url 'sell' %} "  class="btn btn-outline-secondary form-control me-2">Sell Stock</a>a#}
     {% endif %}
 {% endif %}
 

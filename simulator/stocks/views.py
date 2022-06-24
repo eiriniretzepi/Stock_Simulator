@@ -22,11 +22,18 @@ def stock_info(request):
     return render(request, 'stock_info.html', {'api': api})
 
 
-def buy_sell(request):
+def buy(request, buy):
     import yfinance as yf
 
-    if request.method == 'GET':
-        buy = request.GET.get('buy')
+    # if request.method == 'POST':
 
-    return render(request, 'buy_sell.html', {'buy': buy})
+    return render(request, 'buy.html', {'buy': buy})
+
+
+# def sell(request):
+#     import yfinance as yf
+#
+#     # if request.method == 'POST':
+#
+#     return render(request, 'buy.html', {'buy': buy})
 
