@@ -37,9 +37,8 @@
 
             <br/>
             <br/>
-            <button href="url '' buy" class="btn btn-outline-secondary form-control me-2" type="submit">Buy Stock</button>
-            <button href="/product/?sku={{ sku }}" class="btn btn-outline-secondary form-control me-2" type="submit">Sell Stock</button>
-<!--            <a class="btn-link" href="/product/?sku={{ sku }}">{{sku}}</a>-->
+            <a href="{% url 'buySell' ?buy={{ True }} %} " class="btn btn-outline-secondary form-control me-2">Buy Stock</a>
+            <a href="{% url 'buySell' ?buy={{ False }} %} "  class="btn btn-outline-secondary form-control me-2">Sell Stock</a>
     {% endif %}
 {% endif %}
 

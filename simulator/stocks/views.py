@@ -25,5 +25,8 @@ def stock_info(request):
 def buy_sell(request):
     import yfinance as yf
 
-     # if request.method == "GET":
+    if request.method == 'GET':
+        buy = request.GET.get('buy')
+
+    return render(request, 'buy_sell.html', {'buy': buy})
 
