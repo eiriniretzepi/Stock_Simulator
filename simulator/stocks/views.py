@@ -34,6 +34,9 @@ def buy(request):
 
 
 def buy_sell(request):
+
+
+
     return render(request, 'portfolio.html', {})
 
 

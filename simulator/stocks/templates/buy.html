@@ -2,6 +2,19 @@
 
 {% block content %}
 
+<h1>{{ api.longName }}</h1>
+    </br>
+    <body>
+        <div class="p-3 border" text="center">
+            <form> {% csrf_token %}
+                <h3>Price: {{ api.currentPrice }}</h3>
+                <h3>*</h3>
+                <h3>Shares: <input type="text" id="lname" name="lname"> </h3>
+            </form>
+        </div>
+    </body>
+
+
 {# <form action ="{% url 'buy' %}" class="d-flex" role="search" method="POST">#}
 {# This calls the buy method in view and you can extract the data using a post#}
 {#  {% csrf_token %}#}
@@ -9,6 +22,4 @@
 {#  <button class="btn btn-outline-secondary form-control me-1 bg-dark text-light" type="submit">Search Stock</button>#}
 {#</form>#}
 {##}
-{{ api.longName }}
-
 {% endblock %}
