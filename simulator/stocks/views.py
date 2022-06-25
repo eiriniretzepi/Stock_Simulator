@@ -30,7 +30,10 @@ def buy(request):
         ticker = yf.Ticker(get_ticker)
         api = ticker.info
 
-    return render(request, 'buy.html', {'api': api})
+    # also pass the portfolio available cash in order to check if the purchase is possible
+    cash = request.user.portfolio.cash
+
+    return render(request, 'buy.html', {'api': api, 'cash': cash})
 
 
 def buy_sell(request):

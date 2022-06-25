@@ -1,16 +1,30 @@
 {% extends "base.html" %}
 
 {% block content %}
+{% load static %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/buy.css' %}"/>
 
-<h1>{{ api.longName }}</h1>
+<h2>{{ api.longName }}</h2>
     </br>
     <body>
         <div class="p-3 border" text="center">
             <form> {% csrf_token %}
-                <h3>Price: {{ api.currentPrice }}</h3>
-                <h3>*</h3>
-                <h3>Shares: <input type="text" id="lname" name="lname"> </h3>
+                <h5 class="specific">Portfolio Cash: {{ cash }}</h5>
+                </br>
+                <h5>Stock Price: {{ api.currentPrice }}</h5>
+                <h5>*</h5>
+                <h5>Number of Shares to Buy: <input type="text" id="lname" name="lname"> </h5>
+                <h5>=</h5>
+                <script>
+                    $("input").change(function(){
+                      alert("The text has been changed.");
+                      {#  var htmlString = ( "h5.specific" ).html();#}
+
+                    });
+                </script>
             </form>
+            <h5>Total Cost: </h5>
         </div>
     </body>
 
