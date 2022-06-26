@@ -4,7 +4,11 @@ from .models import Portfolio, Stock, Transaction, Watchlist, Alert
 
 def list(request):
     portfolio = Portfolio.objects.all()
-    return render(request, 'portfolio.html', {'portfolio': portfolio})
+    if request.method == 'POST':
+        buy = request.POST['buy']
+        shares = request.POST['numberOfShares']
+
+    return render(request, 'portfolio.html', {'portfolio': portfolio, 'shares': shares})
 
 
 def stock_info(request):
@@ -36,11 +40,8 @@ def buy(request):
     return render(request, 'buy.html', {'api': api, 'cash': cash})
 
 
-def buy_sell(request):
-
-
-
-    return render(request, 'portfolio.html', {})
+# def buy_sell(request):
+#     return render(request, 'portfolio.html', {})
 
 
 # def sell(request):

@@ -7,33 +7,42 @@
 
 <h2>{{ api.longName }}</h2>
     </br>
+     <form action ="{% url 'portfolio' %}"  method="POST">
+        {% csrf_token %}
     <body>
-        <div class="p-3 border" text="center">
-            <form> {% csrf_token %}
+        <div class="p-3 m-5 border" text="center">
+
                 <h5 class="specific">Portfolio Cash: {{ cash }}</h5>
                 </br>
                 <h5>Stock Price: {{ api.currentPrice }}</h5>
+                </br
                 <h5>*</h5>
-                <div class="inline-group inline">
-                    <h5>Number of Shares to Buy:
+                 </br
+                <div class="sharesBought">
+                    <h5 class="sharesBought">Number of Shares to Buy:
     {#                    <input type="text" id="lname" name="lname">#}
-                    <div id="incdec">
-                        <input class="updown" type="number" value="0" />
+                    <div class="sharesBought" id="incdec">
+                        <input class="updown" method="POST" type="number" name="numberOfShares" value="0"/>
                     </div>
                     </h5>
                 </div>
 
-            </form>
-            <h5>= </h5>
-            <h5>Total Cost: </h5>
+            <div class="mx-auto inline-group" style="width: 200px; text-align: center;">
+                <h4> = </h4>
+                </br>
+                <h5>Total Cost: {{ api.currentPrice }}</h5>
+            </div>
+
+        </div>
 
             <script>
-                $("input").change(function(){
+                $("#incdec input").change(function(){
                   alert("The text has been changed.");
                 });
                 $(document).ready(function(){
                 $("#up").on('click',function(){
                     $("#incdec input").val(parseInt($("#incdec input").val())+1);
+                    alert("The text has been changed.");
                 });
 
                 $("#down").on('click',function(){
@@ -44,9 +53,17 @@
 
                 });
             </script>
-
-        </div>
     </body>
+
+
+    </br></br></br></br>
+
+        <input class="form-control me-1" type="hidden" name="ticker" value="{{api.symbol}}" />
+        <input class="form-control me-1" type="hidden" name="buy" value="buy" />
+        <button class="btn btn-outline-secondary form-control mx-5 bg-dark text-light" style="width: 840px;" type="submit">Buy Stock</button>
+    </form>
+
+
 {# <form action ="{% url 'buy' %}" class="d-flex" role="search" method="POST">#}
 {# This calls the buy method in view and you can extract the data using a post#}
 {#  {% csrf_token %}#}

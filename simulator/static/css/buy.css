@@ -2,15 +2,29 @@
 h2 {
   text-align: center;
 }
+
 h5.specific {
   text-align: center;
 }
 
 input.updown{
-  width: 12%;
+  width: 50%;
   padding: 3px 3px;
   margin: 4px 0;
   box-sizing: border-box;
   text-align: center;
   text: center;
 }
+.sharesBought{
+  display: inline-block;
+  margin: 4px 0;
+  box-sizing: border-box;
+  text: center;
+}
+/*.shareCost{*/
+/*  display: inline-block;*/
+/*  text-align: right;*/
+/*  margin: 4px 0;*/
+/*  box-sizing: border-box;*/
+/*  text: center;*/
+/*}*/
