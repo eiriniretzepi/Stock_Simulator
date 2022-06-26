@@ -1,8 +1,16 @@
+
 h2 {
   text-align: center;
-  text: red;
 }
-
 h5.specific {
   text-align: center;
+}
+
+input.updown{
+  width: 12%;
+  padding: 3px 3px;
+  margin: 4px 0;
+  box-sizing: border-box;
+  text-align: center;
+  text: center;
 }
