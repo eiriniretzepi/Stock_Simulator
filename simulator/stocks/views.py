@@ -1,14 +1,17 @@
 from django.shortcuts import render
 from .models import Portfolio, Stock, Transaction, Watchlist, Alert
+from .forms import PortolioForm, StockForm, TransactionForm, WatchlistForm, AlertForm
 
 
-def list(request):
+def portfolio(request):
     portfolio = Portfolio.objects.all()
+
     if request.method == 'POST':
         buy = request.POST['buy']
         shares = request.POST['numberOfShares']
+        ticker = request.POST['ticker']
 
-    return render(request, 'portfolio.html', {'portfolio': portfolio, 'shares': shares})
+    return render(request, 'portfolio.html', {'portfolio': portfolio})
 
 
 def stock_info(request):
