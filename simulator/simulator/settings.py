@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     # apps
     'home',
     'stocks',
+    'predictions',
 ]
 
 MIDDLEWARE = [
