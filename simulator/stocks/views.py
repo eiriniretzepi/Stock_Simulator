@@ -45,32 +45,42 @@ def buy(request):
 
 def watchlist(request):
     import yfinance as yf
+    tickers = []
 
-    # if request.method == "POST":
-    #     #should check if the stock already exists SHOULD NOT ADD THE SAME STOCK TWICE
-    #     pred_ticker = Watchlist.objects.all().values('ticker')
-    #     for pred in pred_ticker:
-    #         if pred['ticker'] == request.POST:
-    #             return redirect('predictions')
-    #
-    #     form = WatchlistForm(request.POST or None, request.user.portfolio)
-    #
-    #     if form.is_valid():
-    #         object = form.save(commit=False)
-    #         object.user = request.user
-    #         object.save()
-    #         return redirect('watchlist')
-    # else:
-    #     watchstocks = Watchlist.objects.all()
-    #     output = []
-    #     for stock in watchstocks:
-    #         tick = yf.Ticker(str(stock))
-    #         api = tick.info
-    #
-    #         # if api.get("currentPrice") is None:
-    #         #     api = "Error"
-    #         # else:
-    #         output.append(api)
+    if request.method == "POST":
+        #should check if the stock already exists SHOULD NOT ADD THE SAME STOCK TWICE
+        pred_ticker = Watchlist.objects.all().values('ticker')
+        for pred in pred_ticker:
+            if pred['ticker'] == request.POST["ticker"]:
+                return redirect('watchlist')
 
-    return render(request, 'watchlist.html', {})
+        w = Watchlist.objects.create(ticker=request.POST["ticker"], portfolio=request.user.portfolio)
+
+        w.save()
+        return redirect('watchlist')
+    else:
+        watchstocks = Watchlist.objects.all().values('ticker')
+
+        for stock in watchstocks:
+            tick = yf.Ticker(str(stock.get('ticker')))
+            api = tick.info
+
+            # if api.get("currentPrice") is None:
+            #     api = "Error"
+            # else:
+            tickers.append(api)
+
+        watchItems = Watchlist.objects.all().values()
+
+    return render(request, 'watchlist.html', {'tickers': tickers, 'watchItems': watchItems})
+
+
+def delete(request, stock_id):
+    item = Watchlist.objects.get(pk=stock_id)
+    item.delete()
+    # messages.success(request, ("Stock has been deleted!"))
+    return redirect('watchlist')
+
+
+
 
