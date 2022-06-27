@@ -5,6 +5,14 @@
 <h1>WatchList</h1>
 </br>
 
+    <form action ="{% url 'watchlist' %}" class="d-flex" role="search" method="POST">
+    {% csrf_token %}
+        <input class="form-control mr-sm-2" type="search" placeholder="Add Stock Prediction" aria-label="Search" style="width: 230px; height: 45px" name="ticker">
+        <button class="btn btn-outline-secondary my-2 my-sm-0" type="submit">Search</button>
+    </form>
+
+    </br></br>
+
     {% if api %}
     {% if api == "Error" %}
         There was a problem with your ticker symbol, please try again...
@@ -36,7 +44,8 @@
               </tbody>
             </table>
             <br/>
-
+    {% endif %}
+{% endif %}
 
 
 {% endblock %}

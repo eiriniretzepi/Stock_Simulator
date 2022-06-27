@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .models import Portfolio, Stock, Transaction, Watchlist, Alert
 from .forms import PortolioForm, StockForm, TransactionForm, WatchlistForm, AlertForm
 
@@ -43,14 +43,34 @@ def buy(request):
     return render(request, 'buy.html', {'api': api, 'cash': cash})
 
 
-# def buy_sell(request):
-#     return render(request, 'portfolio.html', {})
+def watchlist(request):
+    import yfinance as yf
 
+    # if request.method == "POST":
+    #     #should check if the stock already exists SHOULD NOT ADD THE SAME STOCK TWICE
+    #     pred_ticker = Watchlist.objects.all().values('ticker')
+    #     for pred in pred_ticker:
+    #         if pred['ticker'] == request.POST:
+    #             return redirect('predictions')
+    #
+    #     form = WatchlistForm(request.POST or None, request.user.portfolio)
+    #
+    #     if form.is_valid():
+    #         object = form.save(commit=False)
+    #         object.user = request.user
+    #         object.save()
+    #         return redirect('watchlist')
+    # else:
+    #     watchstocks = Watchlist.objects.all()
+    #     output = []
+    #     for stock in watchstocks:
+    #         tick = yf.Ticker(str(stock))
+    #         api = tick.info
+    #
+    #         # if api.get("currentPrice") is None:
+    #         #     api = "Error"
+    #         # else:
+    #         output.append(api)
 
-# def sell(request):
-#     import yfinance as yf
-#
-#     # if request.method == 'POST':
-#
-#     return render(request, 'buy.html', {'buy': buy})
+    return render(request, 'watchlist.html', {})
 

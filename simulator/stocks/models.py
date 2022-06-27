@@ -10,14 +10,15 @@ class Portfolio(models.Model):
 
 
 class Stock(models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=20)
+    ticker = models.CharField(max_length=20)
     stocksOwned = models.IntegerField()
     priceBought = models.FloatField()  # the price of the stock when it was bought
     portfolio = models.ForeignKey(Portfolio, on_delete=models.CASCADE)
 
 
 class Transaction(models.Model):
-    stockName = models.CharField(max_length=50)
+    stockName = models.CharField(max_length=20)
     bought = models.BooleanField(default=True)
     numberOfStocks = models.IntegerField()
     stockPrice = models.FloatField()
@@ -26,12 +27,13 @@ class Transaction(models.Model):
 
 
 class Watchlist(models.Model):
-    stockName = models.CharField(max_length=50)
+    ticker = models.CharField(max_length=20)
     portfolio = models.ForeignKey(Portfolio, on_delete=models.CASCADE)
 
 
 class Alert(models.Model):
-    stockName = models.CharField(max_length=50)
+    stockName = models.CharField(max_length=20)
+    ticker = models.CharField(max_length=20)
     alertPrice = models.FloatField()
     portfolio = models.ForeignKey(Portfolio, on_delete=models.CASCADE)
 
