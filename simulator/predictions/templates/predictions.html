@@ -24,8 +24,8 @@
  <tbody>
   {% for list_item in output %}
         <tr>
-            <th scope="row"> {{ list_item.companyName }}</th>
-            <td>${{ list_item.latestPrice }}</td>
+            <th scope="row"> {{ list_item.longName }}</th>
+            <td>${{ list_item.currentPrice }}</td>
             <td>${{ list_item.previousClose }}</td>
             <td>${{ list_item.marketCap}}</td>
         </tr>

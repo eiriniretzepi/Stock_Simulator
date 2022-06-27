@@ -18,14 +18,14 @@ def predictions(request):
     else:
         ticker = Predictions.objects.all()
         output = []
-        # for ticker_item in ticker:
-        #     tick = yf.Ticker(ticker_item)
-        #     api = tick.info
-        #
-        #     if api.get("currentPrice") is None:
-        #         api = "Error"
-        #     else:
-        #         output.append(api)
+        for ticker_item in ticker:
+            tick = yf.Ticker(str(ticker_item))
+            api = tick.info
+
+            # if api.get("currentPrice") is None:
+            #     api = "Error"
+            # else:
+            output.append(api)
 
         return render(request, 'predictions.html', {'output': output})
 
