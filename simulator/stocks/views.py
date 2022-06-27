@@ -4,12 +4,26 @@ from .forms import PortolioForm, StockForm, TransactionForm, WatchlistForm, Aler
 
 
 def portfolio(request):
+    import yfinance as yf
     portfolio = Portfolio.objects.all()
 
     if request.method == 'POST':
         buy = request.POST['buy']
         shares = request.POST['numberOfShares']
-        ticker = request.POST['ticker']
+        get_ticker = request.POST['ticker']
+        ticker = yf.Ticker(get_ticker)
+        api = ticker.info
+
+        w = Stock.objects.create(name=api.longName,
+                                 ticker=ticker,
+                                 stocksOwned=shares,
+                                 priceBought=api.currentPrice,
+                                 portfolio=request.user.portfolio)
+        # s = Stock(name="Apple", ticker="aapl", stocksOwned=2, priceBought=21.2, portfolio=user.portfolio)
+
+        if buy == "buy":
+            portfolio.cash = portfolio.cash - shares*api.currentPrice
+
 
     return render(request, 'portfolio.html', {'portfolio': portfolio})
 
