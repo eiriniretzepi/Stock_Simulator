@@ -8,6 +8,11 @@ def predictions(request):
 
     if request.method == "POST":
         #should check if the stock already exists SHOULD NOT ADD THE SAME STOCK TWICE
+        pred_ticker = Predictions.objects.all().values('ticker')
+        for pred in pred_ticker:
+            if pred['ticker'] == request.POST:
+                return redirect('predictions')
+
         form = PredictionForm(request.POST or None)
 
         if form.is_valid():
