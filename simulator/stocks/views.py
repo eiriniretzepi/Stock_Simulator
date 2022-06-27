@@ -51,7 +51,7 @@ def watchlist(request):
         #should check if the stock already exists SHOULD NOT ADD THE SAME STOCK TWICE
         pred_ticker = Watchlist.objects.all().values('ticker')
         for pred in pred_ticker:
-            if pred['ticker'] == request.POST["ticker"]:
+            if pred['ticker'].lower() == request.POST["ticker"].lower():
                 return redirect('watchlist')
 
         w = Watchlist.objects.create(ticker=request.POST["ticker"], portfolio=request.user.portfolio)
