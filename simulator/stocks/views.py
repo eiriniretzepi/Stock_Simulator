@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from .models import Portfolio, Stock, Transaction, Watchlist, Alert
 from .forms import PortolioForm, StockForm, TransactionForm, WatchlistForm, AlertForm
+from datetime import datetime
 
 
 def portfolio(request):
@@ -14,16 +15,30 @@ def portfolio(request):
         ticker = yf.Ticker(get_ticker)
         api = ticker.info
 
-        w = Stock.objects.create(name=api.longName,
+        #check if stock exists, if it does just change its fields
+        s = Stock.objects.create(name=api.get('longName'),
                                  ticker=ticker,
                                  stocksOwned=shares,
-                                 priceBought=api.currentPrice,
                                  portfolio=request.user.portfolio)
+        s.save()
         # s = Stock(name="Apple", ticker="aapl", stocksOwned=2, priceBought=21.2, portfolio=user.portfolio)
 
         if buy == "buy":
-            portfolio.cash = portfolio.cash - shares*api.currentPrice
+            buybool = True
+            portfolio.cash = portfolio.cash - shares*api.get('currentPrice')
+            portfolio.cashInvested = portfolio.cashInvested + shares * api.get('currentPrice')
+        else:
+            buybool = False
+            portfolio.cash = portfolio.cash + shares * api.get('currentPrice')
+            portfolio.cashInvested = portfolio.cashInvested - shares * api.get('currentPrice')
 
+        t = Transaction.objects.create(stockName=api.get('longName'),
+                                       bought=buybool,
+                                       numberOfStocks=shares,
+                                       stockPrice = api.get('currentPrice'),
+                                       date=datetime.today(),
+                                       portfolio=request.user.portfolio)
+        t.save()
 
     return render(request, 'portfolio.html', {'portfolio': portfolio})
 

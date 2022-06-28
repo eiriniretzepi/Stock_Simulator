@@ -11,7 +11,7 @@ class PortolioForm(forms.ModelForm):
 class StockForm(forms.ModelForm):
     class Meta:
         model = Stock
-        fields = ["name", "ticker", "stocksOwned", "priceBought", "portfolio"]
+        fields = ["name", "ticker", "stocksOwned", "portfolio"]
 
 
 class TransactionForm(forms.ModelForm):

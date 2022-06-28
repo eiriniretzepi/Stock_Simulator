@@ -5,15 +5,14 @@ from django.db.models.signals import post_save
 
 class Portfolio(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    cash = models.IntegerField(default=20000, editable=True)
-    cashInvested = models.IntegerField(default=0, editable=True)
+    cash = models.FloatField(default=20000.0, editable=True)
+    cashInvested = models.FloatField(default=0.0, editable=True)
 
 
 class Stock(models.Model):
     name = models.CharField(max_length=20)
     ticker = models.CharField(max_length=20)
     stocksOwned = models.IntegerField()
-    priceBought = models.FloatField()  # the price of the stock when it was bought
     portfolio = models.ForeignKey(Portfolio, on_delete=models.CASCADE)
 
 
