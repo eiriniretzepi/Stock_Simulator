@@ -4,7 +4,36 @@
 
 <h1>Dashboard</h1>
 
+<br/>
+    {{ portfolio.cash }}
 
+            <table class="table table-striped table-bordered table-hover">
+               <thead class="table-dark">
+                <tr>
+                  <th scope="col">Stock Name</th>
+                  <th scope="col">Shares Bought</th>
+                  <th scope="col">Total Cost</th>
+                  <th scope="col">Price of Stocks when bought</th>
+                  <th scope="col">Previous Close</th>
+                  <th scope="col">52Wk High</th>
+                  <th scope="col">52Wk Low</th>
+                </tr>
+              </thead>
+              <tbody>
+              {% for list_item in tickers %}
+                    <tr>
+                        <th scope="row"> {{ list_item.longName }}</th>
+                        <td>${{ list_item.currentPrice }}</td>
+                        <td>${{ list_item.marketCap }}</td>
+                        <td>${{ list_item.totalRevenue }}</td>
+                        <td>${{ list_item.previousClose }}</td>
+                        <td>${{ list_item.fiftyTwoWeekHigh }}</td>
+                        <td>${{ list_item.fiftyTwoWeekLow }}</td>
+                    </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+            <br/>
 
 
 {% endblock %}

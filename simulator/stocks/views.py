@@ -3,20 +3,28 @@ from .models import Portfolio, Stock, Transaction, Watchlist, Alert
 from .forms import PortolioForm, StockForm, TransactionForm, WatchlistForm, AlertForm
 from datetime import datetime
 
+
 def addPortfolio(request):
-    portfolio = Portfolio.objects.all()
-    if portfolio == 0:
-        p = Portfolio(request.user)
+    portfolios = Portfolio.objects.all()
+    portfolio = []
+
+    for p in portfolios:
+        if p.user == request.user:
+            portfolio.append(p)
+
+    if len(portfolio) == 0:
+        p = Portfolio.objects.create(user=request.user)
         p.save()
+
     return redirect('portfolio')
 
 
 def portfolio(request):
     import yfinance as yf
 
-    portfolio = Portfolio.objects.all()
+    portfolios = Portfolio.objects.all()
 
-    if portfolio == 0:
+    if portfolios == 0:
         return redirect('addPortfolio')
 
     if request.method == 'POST':
@@ -34,14 +42,18 @@ def portfolio(request):
         s.save()
         # s = Stock(name="Apple", ticker="aapl", stocksOwned=2, priceBought=21.2, portfolio=user.portfolio)
 
+        portfolio = request.user.portfolio
+
         if buy == "buy":
             buybool = True
-            portfolio.cash = portfolio.cash - shares*api.get('currentPrice')
-            portfolio.cashInvested = portfolio.cashInvested + shares * api.get('currentPrice')
+            portfolio.cash = portfolio.cash - float(shares)*api.get('currentPrice')
+            portfolio.cashInvested = portfolio.cashInvested + float(shares) * api.get('currentPrice')
+            portfolio.save()
         else:
             buybool = False
             portfolio.cash = portfolio.cash + shares * api.get('currentPrice')
             portfolio.cashInvested = portfolio.cashInvested - shares * api.get('currentPrice')
+            portfolio.save()
 
         t = Transaction.objects.create(stockName=api.get('longName'),
                                        bought=buybool,
@@ -126,6 +138,16 @@ def delete(request, stock_id):
     # messages.success(request, ("Stock has been deleted!"))
     return redirect('watchlist')
 
+
+def transactions(request):
+    transactions = Transaction.objects.all().order_by('date')
+    porfolio_transactions = []
+
+    for t in transactions:
+        if t.portfolio == request.user.portfolio:
+            porfolio_transactions.append(t)
+
+    return render(request, 'transactions.html', {'transaction': porfolio_transactions})
 
 
 

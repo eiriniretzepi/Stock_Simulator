@@ -27,6 +27,5 @@ class SignupView(CreateView):
 
     def get(self, request, *args, **kwargs):
         if self.request.user.is_authenticated:
-            # create a portfolio when a new user signs up
             return redirect('stocks.addPortfolio')
         return super().get(request, *args, **kwargs)
