@@ -55,6 +55,8 @@ def portfolio(request):
 
     stocks = Stock.objects.filter(portfolio=request.user.portfolio)
 
+    
+
     return render(request, 'portfolio.html', {'portfolio': request.user.portfolio, 'stocks': stocks})
 
 
@@ -149,14 +151,9 @@ def delete(request, stock_id):
 
 
 def transactions(request):
-    transactions = Transaction.objects.all().order_by('date')
-    porfolio_transactions = []
+    transactions = Transaction.objects.filter(portfolio=request.user.portfolio).order_by('date')
 
-    for t in transactions:
-        if t.portfolio == request.user.portfolio:
-            porfolio_transactions.append(t)
-
-    return render(request, 'transactions.html', {'transactions': porfolio_transactions})
+    return render(request, 'transactions.html', {'transactions': transactions})
 
 
 
