@@ -3,10 +3,21 @@ from .models import Portfolio, Stock, Transaction, Watchlist, Alert
 from .forms import PortolioForm, StockForm, TransactionForm, WatchlistForm, AlertForm
 from datetime import datetime
 
+def addPortfolio(request):
+    portfolio = Portfolio.objects.all()
+    if portfolio == 0:
+        p = Portfolio(request.user)
+        p.save()
+    return redirect('portfolio')
+
 
 def portfolio(request):
     import yfinance as yf
+
     portfolio = Portfolio.objects.all()
+
+    if portfolio == 0:
+        return redirect('addPortfolio')
 
     if request.method == 'POST':
         buy = request.POST['buy']
@@ -88,10 +99,15 @@ def watchlist(request):
         w.save()
         return redirect('watchlist')
     else:
-        watchstocks = Watchlist.objects.all().values('ticker')
+        allwatchstocks = Watchlist.objects.all()
+        watchstocks = []
+
+        for w in allwatchstocks:
+            if w.portfolio == request.user.portfolio:
+                watchstocks.append(w.ticker)
 
         for stock in watchstocks:
-            tick = yf.Ticker(str(stock.get('ticker')))
+            tick = yf.Ticker(str(stock))
             api = tick.info
 
             # if api.get("currentPrice") is None:

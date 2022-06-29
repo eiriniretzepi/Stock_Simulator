@@ -3,6 +3,7 @@ from . import views
 
 urlpatterns = [
     path('portfolio', views.portfolio, name="portfolio"),
+    path('addPortfolio', views.addPortfolio, name="addPortfolio"),
     path('stockInfo', views.stock_info, name="stockInfo"),
     path('buy', views.buy, name="buy"),
     path('watchlist', views.watchlist, name="watchlist"),

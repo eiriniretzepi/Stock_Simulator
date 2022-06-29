@@ -6,6 +6,7 @@ from django.views.generic import CreateView
 from datetime import datetime
 
 
+
 class HomeView(TemplateView):
     template_name = 'welcome.html'
     extra_context = {'today': datetime.today()}
@@ -26,5 +27,6 @@ class SignupView(CreateView):
 
     def get(self, request, *args, **kwargs):
         if self.request.user.is_authenticated:
-            return redirect('stocks.portfolio')
+            # create a portfolio when a new user signs up
+            return redirect('stocks.addPortfolio')
         return super().get(request, *args, **kwargs)
