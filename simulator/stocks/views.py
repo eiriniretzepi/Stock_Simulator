@@ -5,14 +5,9 @@ from datetime import datetime
 
 
 def addPortfolio(request):
-    portfolios = Portfolio.objects.all()
-    portfolio = []
+    portfolios = Portfolio.objects.filter(user=request.user)
 
-    for p in portfolios:
-        if p.user == request.user:
-            portfolio.append(p)
-
-    if len(portfolio) == 0:
+    if len(portfolios) == 0:
         p = Portfolio.objects.create(user=request.user)
         p.save()
 
@@ -21,11 +16,6 @@ def addPortfolio(request):
 
 def portfolio(request):
     import yfinance as yf
-
-    portfolios = Portfolio.objects.all()
-
-    if portfolios == 0:
-        return redirect('addPortfolio')
 
     if request.method == 'POST':
         buy = request.POST['buy']
@@ -51,8 +41,8 @@ def portfolio(request):
             portfolio.save()
         else:
             buybool = False
-            portfolio.cash = portfolio.cash + shares * api.get('currentPrice')
-            portfolio.cashInvested = portfolio.cashInvested - shares * api.get('currentPrice')
+            portfolio.cash = portfolio.cash + float(shares) * api.get('currentPrice')
+            portfolio.cashInvested = portfolio.cashInvested - float(shares) * api.get('currentPrice')
             portfolio.save()
 
         t = Transaction.objects.create(stockName=api.get('longName'),
@@ -63,7 +53,9 @@ def portfolio(request):
                                        portfolio=request.user.portfolio)
         t.save()
 
-    return render(request, 'portfolio.html', {'portfolio': portfolio})
+    stocks = Stock.objects.filter(portfolio=request.user.portfolio)
+
+    return render(request, 'portfolio.html', {'portfolio': request.user.portfolio, 'stocks': stocks})
 
 
 def stock_info(request):
@@ -95,6 +87,20 @@ def buy(request):
     return render(request, 'buy.html', {'api': api, 'cash': cash})
 
 
+def sell(request):
+    import yfinance as yf
+
+    if request.method == 'POST':
+        get_ticker = request.POST['ticker']
+        ticker = yf.Ticker(get_ticker)
+        api = ticker.info
+
+    # also pass the portfolio available cash in order to check if the purchase is possible
+    cash = request.user.portfolio.cash
+
+    return render(request, 'sell.html', {'api': api, 'cash': cash})
+
+
 def watchlist(request):
     import yfinance as yf
     tickers = []
@@ -113,10 +119,12 @@ def watchlist(request):
     else:
         allwatchstocks = Watchlist.objects.all()
         watchstocks = []
+        watchItems = []
 
         for w in allwatchstocks:
             if w.portfolio == request.user.portfolio:
                 watchstocks.append(w.ticker)
+                watchItems.append({'id': w.id, 'ticker': w.ticker})
 
         for stock in watchstocks:
             tick = yf.Ticker(str(stock))
@@ -127,7 +135,8 @@ def watchlist(request):
             # else:
             tickers.append(api)
 
-        watchItems = Watchlist.objects.all().values()
+        # watchItems = Watchlist.objects.all().values()
+    #      [{'id': 1, 'ticker': 'aapl', 'portfolio_id': 1}, {'id': 2, 'ticker': 'goog', 'portfolio_id': 1}]>
 
     return render(request, 'watchlist.html', {'tickers': tickers, 'watchItems': watchItems})
 
@@ -147,7 +156,7 @@ def transactions(request):
         if t.portfolio == request.user.portfolio:
             porfolio_transactions.append(t)
 
-    return render(request, 'transactions.html', {'transaction': porfolio_transactions})
+    return render(request, 'transactions.html', {'transactions': porfolio_transactions})
 
 
 
