@@ -17,6 +17,13 @@ class StocksAdmin(admin.ModelAdmin):
 admin.site.register(models.Stock, StocksAdmin)
 
 
+class AllStocksAdmin(admin.ModelAdmin):
+    pass
+
+
+admin.site.register(models.AllStocks, StocksAdmin)
+
+
 class TransactionsAdmin(admin.ModelAdmin):
     pass
 
@@ -30,9 +37,3 @@ class WatchListAdmin(admin.ModelAdmin):
 
 admin.site.register(models.Watchlist, WatchListAdmin)
 
-
-class AlertAdmin(admin.ModelAdmin):
-    pass
-
-
-admin.site.register(models.Alert, AlertAdmin)

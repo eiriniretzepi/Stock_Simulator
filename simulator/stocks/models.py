@@ -1,6 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.db.models.signals import post_save
 
 
 class Portfolio(models.Model):
@@ -12,12 +11,19 @@ class Portfolio(models.Model):
 class Stock(models.Model):
     name = models.CharField(max_length=20)
     ticker = models.CharField(max_length=20)
-    # add DATE
-    # change the model to be float
+    date = models.DateField()
+    priceBought = models.FloatField()
+    stocksBought = models.IntegerField()
+    portfolio = models.ForeignKey(Portfolio, on_delete=models.CASCADE)
+
+
+class AllStocks(models.Model):
+    name = models.CharField(max_length=20)
+    ticker = models.CharField(max_length=20)
+    totalCost = models.FloatField()
     stocksOwned = models.IntegerField()
     portfolio = models.ForeignKey(Portfolio, on_delete=models.CASCADE)
 
-# Create model that keeps
 
 class Transaction(models.Model):
     stockName = models.CharField(max_length=20)
@@ -32,10 +38,5 @@ class Watchlist(models.Model):
     ticker = models.CharField(max_length=20)
     portfolio = models.ForeignKey(Portfolio, on_delete=models.CASCADE)
 
-#DELLETE
-class Alert(models.Model):
-    stockName = models.CharField(max_length=20)
-    ticker = models.CharField(max_length=20)
-    alertPrice = models.FloatField()
-    portfolio = models.ForeignKey(Portfolio, on_delete=models.CASCADE)
+
 

@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
-from .models import Portfolio, Stock, Transaction, Watchlist, Alert
-from .forms import PortolioForm, StockForm, TransactionForm, WatchlistForm, AlertForm
+from .models import Portfolio, Stock, Transaction, Watchlist
+from .forms import PortolioForm, StockForm, TransactionForm, WatchlistForm
 from datetime import datetime
 
 
@@ -16,6 +16,10 @@ def addPortfolio(request):
 
 def portfolio(request):
     import yfinance as yf
+
+    portfolios = Portfolio.objects.filter(user=request.user)
+    if not portfolios:
+       return redirect('addPortfolio')
 
     if request.method == 'POST':
         buy = request.POST['buy']

@@ -1,5 +1,5 @@
 from django import forms
-from .models import Portfolio, Stock, Transaction, Watchlist, Alert
+from .models import Portfolio, Stock, Transaction, Watchlist, AllStocks
 
 
 class PortolioForm(forms.ModelForm):
@@ -11,7 +11,13 @@ class PortolioForm(forms.ModelForm):
 class StockForm(forms.ModelForm):
     class Meta:
         model = Stock
-        fields = ["name", "ticker", "stocksOwned", "portfolio"]
+        fields = ["name", "ticker", "date", "priceBought", "stocksBought", "portfolio"]
+
+
+class AllStockForm(forms.ModelForm):
+    class Meta:
+        model = AllStocks
+        fields = ["name", "ticker", "totalCost", "stocksOwned", "portfolio"]
 
 
 class TransactionForm(forms.ModelForm):
@@ -26,7 +32,4 @@ class WatchlistForm(forms.ModelForm):
         fields = ["ticker", "portfolio"]
 
 
-class AlertForm(forms.ModelForm):
-    class Meta:
-        model = Alert
-        fields = ["stockName", "alertPrice", "portfolio"]
+
