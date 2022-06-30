@@ -1,10 +1,9 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.views import LoginView, LogoutView
-from django.contrib.auth.forms import UserCreationForm
-from django.views.generic import TemplateView
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm
+from django.views.generic import TemplateView, UpdateView
 from django.views.generic import CreateView
 from datetime import datetime
-
 
 
 class HomeView(TemplateView):
@@ -29,3 +28,12 @@ class SignupView(CreateView):
         if self.request.user.is_authenticated:
             return redirect('stocks.addPortfolio')
         return super().get(request, *args, **kwargs)
+
+
+class UserEditView(UpdateView):
+    form_class = UserChangeForm
+    template_name = 'settings.html'
+    success_url = 'portfolio'
+
+    def get_object(self):
+        return self.request.user

@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .models import Portfolio, Stock, Transaction, Watchlist
+from .models import Portfolio, Stock, Transaction, Watchlist, AllStocks
 from .forms import PortolioForm, StockForm, TransactionForm, WatchlistForm
 from datetime import datetime
 
@@ -17,6 +17,8 @@ def addPortfolio(request):
 def portfolio(request):
     import yfinance as yf
 
+    portfolio = request.user.portfolio
+
     portfolios = Portfolio.objects.filter(user=request.user)
     if not portfolios:
        return redirect('addPortfolio')
@@ -28,26 +30,57 @@ def portfolio(request):
         ticker = yf.Ticker(get_ticker)
         api = ticker.info
 
-        #check if stock exists, if it does just change its fields
         s = Stock.objects.create(name=api.get('longName'),
-                                 ticker=ticker,
-                                 stocksOwned=shares,
+                                 ticker=get_ticker,
+                                 date=datetime.today(),
+                                 priceBought=api.get('currentPrice'),
+                                 stocksBought=shares,
                                  portfolio=request.user.portfolio)
         s.save()
         # s = Stock(name="Apple", ticker="aapl", stocksOwned=2, priceBought=21.2, portfolio=user.portfolio)
 
-        portfolio = request.user.portfolio
+
 
         if buy == "buy":
             buybool = True
             portfolio.cash = portfolio.cash - float(shares)*api.get('currentPrice')
             portfolio.cashInvested = portfolio.cashInvested + float(shares) * api.get('currentPrice')
             portfolio.save()
+
+            # check if stock exists, if it does just change its fields else add a new AllStocks model
+            p = AllStocks.objects.filter(portfolio=portfolio)
+            existingStocks = p.filter(ticker=get_ticker)
+
+            if existingStocks:
+                stock = existingStocks[0]
+                stock.totalCost = stock.totalCost + float(shares) * api.get('currentPrice')
+                stock.stocksOwned = stock.stocksOwned + int(shares)
+                stock.save()
+            else:
+                addStock = AllStocks.objects.create(name=api.get('longName'),
+                                         ticker=get_ticker,
+                                         totalCost=float(shares)*api.get('currentPrice'),
+                                         stocksOwned=shares,
+                                         portfolio=request.user.portfolio)
+                addStock.save()
+
         else:
             buybool = False
             portfolio.cash = portfolio.cash + float(shares) * api.get('currentPrice')
             portfolio.cashInvested = portfolio.cashInvested - float(shares) * api.get('currentPrice')
             portfolio.save()
+
+            # remove stocks in the AllStocks model from a company also remove from the Stocks
+            p = AllStocks.objects.filter(portfolio=portfolio)
+            existingStocks = p.filter(ticker=get_ticker)
+            stock = existingStocks[0]
+            stock.totalCost = stock.totalCost - float(shares) * api.get('currentPrice')
+            stock.stocksOwned = stock.stocksOwned - int(shares)
+            stock.save()
+
+            if stock.stocksOwned == 0:
+                stock.delete()
+
 
         t = Transaction.objects.create(stockName=api.get('longName'),
                                        bought=buybool,
