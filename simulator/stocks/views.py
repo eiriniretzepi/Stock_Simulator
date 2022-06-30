@@ -7,7 +7,7 @@ from datetime import datetime
 def addPortfolio(request):
     portfolios = Portfolio.objects.filter(user=request.user)
 
-    if len(portfolios) == 0:
+    if not portfolios:
         p = Portfolio.objects.create(user=request.user)
         p.save()
 
@@ -55,9 +55,10 @@ def portfolio(request):
 
     stocks = Stock.objects.filter(portfolio=request.user.portfolio)
 
+    cash = round(request.user.portfolio.cash, 2)
+    cashInvested = round(request.user.portfolio.cashInvested, 2)
 
-
-    return render(request, 'portfolio.html', {'portfolio': request.user.portfolio, 'stocks': stocks})
+    return render(request, 'portfolio.html', {'portfolio': request.user.portfolio, 'cash': cash, 'cashInvested': cashInvested, 'stocks': stocks})
 
 
 def stock_info(request):
@@ -104,6 +105,7 @@ def sell(request):
         ticker = yf.Ticker(get_ticker)
         api = ticker.info
 
+    # extract the number of stocks from AllStocks
 
     # also pass the portfolio available cash in order to check if the purchase is possible
     cash = request.user.portfolio.cash
