@@ -30,18 +30,15 @@ def portfolio(request):
         ticker = yf.Ticker(get_ticker)
         api = ticker.info
 
-        s = Stock.objects.create(name=api.get('longName'),
-                                 ticker=get_ticker,
-                                 date=datetime.today(),
-                                 priceBought=api.get('currentPrice'),
-                                 stocksBought=shares,
-                                 portfolio=request.user.portfolio)
-        s.save()
-        # s = Stock(name="Apple", ticker="aapl", stocksOwned=2, priceBought=21.2, portfolio=user.portfolio)
-
-
-
         if buy == "buy":
+            s = Stock.objects.create(name=api.get('longName'),
+                                     ticker=get_ticker,
+                                     date=datetime.today(),
+                                     priceBought=api.get('currentPrice'),
+                                     stocksBought=shares,
+                                     portfolio=request.user.portfolio)
+            s.save()
+
             buybool = True
             portfolio.cash = portfolio.cash - float(shares)*api.get('currentPrice')
             portfolio.cashInvested = portfolio.cashInvested + float(shares) * api.get('currentPrice')
@@ -58,10 +55,10 @@ def portfolio(request):
                 stock.save()
             else:
                 addStock = AllStocks.objects.create(name=api.get('longName'),
-                                         ticker=get_ticker,
-                                         totalCost=float(shares)*api.get('currentPrice'),
-                                         stocksOwned=shares,
-                                         portfolio=request.user.portfolio)
+                                                    ticker=get_ticker,
+                                                    totalCost=float(shares)*api.get('currentPrice'),
+                                                    stocksOwned=shares,
+                                                    portfolio=request.user.portfolio)
                 addStock.save()
 
         else:
@@ -71,31 +68,57 @@ def portfolio(request):
             portfolio.save()
 
             # remove stocks in the AllStocks model from a company also remove from the Stocks
-            p = AllStocks.objects.filter(portfolio=portfolio)
-            existingStocks = p.filter(ticker=get_ticker)
-            stock = existingStocks[0]
-            stock.totalCost = stock.totalCost - float(shares) * api.get('currentPrice')
-            stock.stocksOwned = stock.stocksOwned - int(shares)
-            stock.save()
+            port = AllStocks.objects.filter(portfolio=portfolio)
+            existingStock = port.filter(ticker=get_ticker)
+            allstock = existingStock[0]
+            allstock.totalCost = allstock.totalCost - float(shares) * api.get('currentPrice')
+            allstock.stocksOwned = allstock.stocksOwned - int(shares)
+            allstock.save()
 
-            if stock.stocksOwned == 0:
-                stock.delete()
+            if allstock.stocksOwned == 0:
+                allstock.delete()
 
+            stocks = Stock.objects.filter(portfolio=portfolio)
+            existingStocks = stocks.filter(ticker=get_ticker).order_by('date')
+
+            #instead of deleting the item it sets the stocksbought to the number we have sold
+            stocksSold = 0
+            for sold in existingStocks:
+                # int(shares) is the number of stocks we are selling
+                # stocksSold is the number of shares we have currently sold
+                if stocksSold < int(shares):
+                    # we want to sell 1 and we have 2
+                    if (int(shares)-sold.stocksBought)<0:
+                        sold.stocksBought = sold.stocksBought - int(shares)
+                        sold.save()
+                        stocksSold = int(shares)
+                    else:
+                        stocksSold = stocksSold + sold.stocksBought
+                        sold.delete()
 
         t = Transaction.objects.create(stockName=api.get('longName'),
                                        bought=buybool,
                                        numberOfStocks=shares,
-                                       stockPrice = api.get('currentPrice'),
+                                       stockPrice= api.get('currentPrice'),
                                        date=datetime.today(),
                                        portfolio=request.user.portfolio)
         t.save()
 
     stocks = Stock.objects.filter(portfolio=request.user.portfolio)
+    allStocks = AllStocks.objects.filter(portfolio=request.user.portfolio)
+
+    #create a dictionary to make the profit
+    currentPrices = []
+    for s in stocks:
+        ticker = yf.Ticker(s.ticker)
+        api = ticker.info
+        profit =round(((api.get("currentPrice") - s.priceBought)* s.stocksBought),2)
+        currentPrices.append(profit)
 
     cash = round(request.user.portfolio.cash, 2)
     cashInvested = round(request.user.portfolio.cashInvested, 2)
 
-    return render(request, 'portfolio.html', {'portfolio': request.user.portfolio, 'cash': cash, 'cashInvested': cashInvested, 'stocks': stocks})
+    return render(request, 'portfolio.html', {'portfolio': request.user.portfolio, 'cash': cash, 'cashInvested': cashInvested, 'stocks': stocks, 'allStocks': allStocks, 'currentPrices': currentPrices})
 
 
 def stock_info(request):
@@ -115,7 +138,7 @@ def stock_info(request):
     #find the stocks that belong to the portfolio and then find
     # if the user owns stocks from that company
         p = Stock.objects.filter(portfolio=request.user.portfolio)
-        s = p.filter(ticker=ticker)
+        s = p.filter(ticker=ticker.ticker)
 
     return render(request, 'stock_info.html', {'api': api, 'stockOwned': s})
 
@@ -129,7 +152,7 @@ def buy(request):
         api = ticker.info
 
     # also pass the portfolio available cash in order to check if the purchase is possible
-    cash = request.user.portfolio.cash
+    cash = round(request.user.portfolio.cash, 2)
 
     return render(request, 'buy.html', {'api': api, 'cash': cash})
 
@@ -145,7 +168,7 @@ def sell(request):
     # extract the number of stocks from AllStocks
 
     # also pass the portfolio available cash in order to check if the purchase is possible
-    cash = request.user.portfolio.cash
+    cash = round(request.user.portfolio.cash, 2)
 
     return render(request, 'sell.html', {'api': api, 'cash': cash})
 

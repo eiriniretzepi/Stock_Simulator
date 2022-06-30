@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load mathfilters %}
 
 {% block content %}
 
@@ -19,13 +20,13 @@
                 </tr>
               </thead>
               <tbody>
-              {% for stock in stocks %}
+              {% for stock,profit in zip(stocks, currentPrices) %}
                     <tr>
                         <th scope="row"> {{ stock.name }}</th>
-                        <td>{{ stock.stocksOwned }}</td>
-                        <td>${{ stock.stocksOwned }}</td>
-                        <td>${{ stock.stocksOwned }}</td>
-                        <td>${{ stock.stocksOwned }}</td>
+                        <td>{{ stock.stocksBought }}</td>
+                        <td>${{ stock.priceBought|mul:stock.stocksBought }}</td>
+                        <td>${{ profit }}</td>
+                        <td>${{ stock.priceBought }}</td>
                         <td>${{ stock.stocksOwned }}</td>
                     </tr>
               {% endfor %}
@@ -33,5 +34,30 @@
             </table>
             <br/>
 
+    <br/>
+    <h3>Accumulated Stocks</h3>
+            <table class="table table-striped table-bordered table-hover">
+               <thead class="table-dark">
+                <tr>
+                  <th scope="col">Stock Name</th>
+                  <th scope="col">Shares Owned</th>
+                  <th scope="col">Total Cost</th>
+                  <th scope="col">Profit/Loss</th>
+                  <th scope="col">Total Return</th>
+                </tr>
+              </thead>
+              <tbody>
+              {% for stocks in allStocks %}
+                    <tr>
+                        <th scope="row"> {{ stocks.name }}</th>
+                        <td>{{ stocks.stocksOwned }}</td>
+                        <td>${{ stocks.totalCost }}</td>
+                        <td>${{ stocks.stocksOwned }}</td>
+                        <td>${{ stocks.stocksOwned }}</td>
+                    </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+            <br/>
 
 {% endblock %}
