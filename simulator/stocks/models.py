@@ -12,10 +12,12 @@ class Portfolio(models.Model):
 class Stock(models.Model):
     name = models.CharField(max_length=20)
     ticker = models.CharField(max_length=20)
-    #change the model to be float
+    # add DATE
+    # change the model to be float
     stocksOwned = models.IntegerField()
     portfolio = models.ForeignKey(Portfolio, on_delete=models.CASCADE)
 
+# Create model that keeps
 
 class Transaction(models.Model):
     stockName = models.CharField(max_length=20)

@@ -50,6 +50,8 @@
                 <button class="btn btn-outline-secondary form-control me-1 bg-dark text-light" type="submit">Buy Stock</button>
              </form>
 
+
+        {% if stockOwned %}
             <form action ="{% url 'sell' %}" class="d-flex" method="POST">
                 {% csrf_token %}
                 <input class="form-control me-1" type="hidden" name="ticker" value="{{api.symbol}}" />
@@ -59,6 +61,9 @@
 {#            <a href="{% url 'buy' tick=api.symbol %}" class="btn btn-outline-secondary form-control me-2" type="submit">Buy Stock</a>#}
 {#            <a href="{% url 'sell' %} "  class="btn btn-outline-secondary form-control me-2">Sell Stock</a>a#}
             </form>
+        {% else %}
+            <h5 style="text-align: center"> You have to buy stocks from this company to be able to sell them!</h5>
+        {% endif %}
     {% endif %}
 {% endif %}
 

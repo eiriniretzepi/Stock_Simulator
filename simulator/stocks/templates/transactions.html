@@ -22,7 +22,11 @@
                         <td>{{ transaction.numberOfStocks }}</td>
                         <td>${{ transaction.stockPrice }}</td>
                         <td>{{ transaction.date }}</td>
-                        <td>{{ transaction.bought }}</td>
+                    {% if transaction.bought == True %}
+                        <td>Bought</td>
+                    {% else %}
+                        <td>Sold</td>
+                    {%  endif %}
                     </tr>
               {% endfor %}
               </tbody>

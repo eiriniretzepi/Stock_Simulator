@@ -55,7 +55,7 @@ def portfolio(request):
 
     stocks = Stock.objects.filter(portfolio=request.user.portfolio)
 
-    
+
 
     return render(request, 'portfolio.html', {'portfolio': request.user.portfolio, 'stocks': stocks})
 
@@ -72,7 +72,14 @@ def stock_info(request):
         if api.get("currentPrice") is None:
             api = "Error"
 
-    return render(request, 'stock_info.html', {'api': api})
+    # disable the Sell button if the user doesn't own stocks for that company
+    #try the AllStocks model
+    #find the stocks that belong to the portfolio and then find
+    # if the user owns stocks from that company
+        p = Stock.objects.filter(portfolio=request.user.portfolio)
+        s = p.filter(ticker=ticker)
+
+    return render(request, 'stock_info.html', {'api': api, 'stockOwned': s})
 
 
 def buy(request):
@@ -96,6 +103,7 @@ def sell(request):
         get_ticker = request.POST['ticker']
         ticker = yf.Ticker(get_ticker)
         api = ticker.info
+
 
     # also pass the portfolio available cash in order to check if the purchase is possible
     cash = request.user.portfolio.cash
